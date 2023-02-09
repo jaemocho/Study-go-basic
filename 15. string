@@ -1,0 +1,65 @@
+1. 문자열 출력
+	"" 사용 시에는 \n \t 같은 형식으로 개행 tab을 실행
+	`` 사용 시에는 그냥 enter로 개행 후 쓰면 인식
+
+2. UTF-8 문자코드
+	문자 1개 1~3 byte, 4byte도 표현 가능
+
+	첫 비트가 0 이면 1byte로 인식하고 읽는다
+	첫 비트가 1 이면 개수를 세어서 개수byte로 인식하고 읽는다 
+
+	UTF-16 2byte 
+
+	UTF-8은 많이 쓰는거는 적은 공간에 적게쓰는 거는 많은 공간에 할당 하여 효율적 
+	예를 들어 영어나 숫자는 1byte 한글 한자 같은 것은 2~3byte로 할당하는 형식 
+
+3. 문자열 순회 
+	len()은 바이트 길이를 의미 UTF-8기준 1byte 초과인 문자들은 이상하게 나올 수 있다
+
+
+		str := "Hello 월드"
+
+		//len() 은 byte 길이를 반환
+		for i := 0; i < len(str); i++ {
+			fmt.Printf("타입:%T 값:%d 문자값:%c \n", str[i], str[i], str[i])
+		}
+
+		// rune -> int32 별칭 타입으로 변환하여야 정상적으로 나온다 
+		arr := []rune(str)
+
+	range 사용 시에는 변환없이 사용 가능 
+
+4. 문자열 합산
+
+	str1 := "hello"
+	str2 := "world"
+
+	str3 := str1 + " " + str2
+
+	str1 += " " + str2
+
+	합산을 할 때마다 전체를 복사하고 공간을 할당 
+
+	strings.builder를 사용 
+
+5. 문자열 비교 
+
+	== != 같다 비교 
+
+	대소비교 : 사전식 비교 
+
+6. 문자열 구조 
+
+	type StringHeader struct {
+		Data uintptr
+		Len int
+	}
+
+	7. 문자열은 불변이다 (immutable) - 문자열 일부만 수정할 수 없다. 
+
+	var str string = "Hello World"
+	str = "How are you?"  // 전체 바꾸기는 가능
+	str[2] = 'a'          // Error 일부 바꾸기 불가능
+
+	type 변환 시 복사 !!!
+

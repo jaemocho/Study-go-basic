@@ -1,0 +1,13 @@
+1. if 초기문; 조건문
+
+if 초기문; 조건문 {
+    문장
+}
+
+// 어떤 함수를 호출하고 결과를 검증할 때 주로 사용 하는 형식     
+// 초기문                               // success 가 조건문                        
+if filenamse, success := UploadFile(); success {
+    fmt.Println("Upload success", filename)
+} else {
+    fmt.Println("Failed to upload")
+}

@@ -1,0 +1,68 @@
+1. 다양한 배열 변수 선언
+
+    var nums [5]int
+
+    days := [3]string{"monday", "tuesday", "wednesday"}
+
+    // 앞에 두개만 적은 경우 나머지는 0.0으로 채워진다 
+    var temps [5]float64 = [5]float64{24.3,26.7}
+
+    // type 생략, index 1에 10 index3에 30을 넣어라 
+    var s = [5]int{1:10, 3:30}
+
+    // ... 으로 해놓으면 뒤에 선언된 숫자의 양만큼 길이가 된다 [3]int랑 같다 
+    x := [...]int{10,20,30}
+
+    // slice 길이가 고정되어있지 않은 동적 배열 
+    []int{10,20,30}
+
+
+2. 배열 선언시 개수는 항상 상수로만
+
+    const Y int = 3
+
+    func main() {
+        X := 5 
+
+        a := [X]int{1,2,3,4,5} //error x가 변수 
+
+        b := [Y]int{1,2,3}  // ok
+    }
+
+3. len() 
+
+    go package 내장 함수 
+
+    배열 slice 등등 의 길이 반환 
+
+    nums 는 배열 
+
+    for i:= 0; i < len(nums); i++{
+        fmt.Println(nums[i])
+    }
+
+4. range 
+
+    slice, map, array 등 순회하면서 두가지 값(index, value)을 반환
+
+    nums 는 배열 
+    i도 같이 출력해주지 않으면 unused error 발생 
+    for i, v := range nums {
+        fmt.Println(i, v)
+    }
+
+    _로 값을 버릴 수 있다 (빈 칸지시자 )
+    for _, v := range nums {
+        fmt.Println(i, v)
+    }
+
+5. 배열 복사 
+
+    a := [5]int{1,2,3,4,5} 
+    
+    b := [5]int{100,200,300,400,500} 
+
+    b = a // 복사 공간 크기를 통채로 복사 배열 크기가 다르면 복사 불가 
+
+
+

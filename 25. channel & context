@@ -1,0 +1,77 @@
+1. 채널은 고루틴간 메시지 큐 
+
+    채널은 고루틴끼리 메시지를 전달할 수 있는 메세지 큐
+
+    thread-safe 한 queue : 멀티쓰레드 환경에서 lock 없이 쓸 수 있다. 
+    mutex를 사용하지 않아도 된다 
+
+2. 채널 생성 
+    
+    make() 로 채널 인스턴스 생성 
+    // chan 은 channel 의 type
+    // string 위치는 message type 다른 형이 들어와도 된다 
+    var messages chan string = make(chan string)
+
+    // 채널인스턴스 <- 넣을 데이터 
+    messages <- "this is a message"
+
+    // 빼낸 데이터를 담을 변수 = <- 채널 인스턴스 
+    var msg string = <- message
+
+3. 채널 크기 
+    기본 크기는 0 
+    채널의 사이즈에 데이터가 다 차있으면, 데이터가 빌 때까지 기다린다 
+    적정한 크기 설정 필요 
+
+    var chan string message = make(chan string, 2)
+
+4. 채널에서 데이터 대기 
+
+    // 데이터가 올 때까지 대기 
+    for n := range ch {
+        ...
+    }
+
+    close(ch) 와 같은 형태로 channel을 닫아주지 않으면 좀비고루틴/고루틱 leak 이 발생한다. 
+    
+5. select 문  ex25.6
+
+    여러 채널에서 동시에 데이터를 기다릴 때 사용
+
+    select {
+    case n:= <-ch1:
+        ...
+    case n2:= <-ch2:
+        ...
+    case ...
+    }
+
+
+6. 일정 간격으로 실행 ex25.6
+    time 패키지의 Tick()은 일정 간격으로 신호를 주는 채널을 반환 
+    After()는 일정 시간 대기 후 한번만 신호를 주는 채널 반환 
+    
+
+7. 채널로 생산자/소비자 패턴 구현
+    go routine         go routine        go routine
+    [차체 생산] -채널-> [바퀴설치] -채널-> [도색] 
+
+8. 컨텍스트(context)
+
+    작업을 지시할 때 작업 가능 시간, 작업 취소 등의 조건을 
+    지시할 수 있는 작업 명세서 역할 
+    ex25.8
+
+    // 3초 뒤에 ctx.Done() 채널에 시그널 발생 
+    ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+
+    // context 를 사용해 값을 지정할 수 있다
+	ctx := context.WithValue(context.Background(), "number", 9)
+
+9. 컨텍스트 랩핑
+    ctx, cancel := context.WithCancel(context.Background())
+    ctx = context.WithValue(ctx, "number", 9)
+    ctx = context.WithValue(ctx, "keyword", "Lilly")
+
+10. 채널로 발행/구독 패턴 구현 (pub/sub)
+    옵저버 패텁과 거의 유사

@@ -1,0 +1,46 @@
+1. 에러 타입
+    type error interface {
+        Error() string 
+    }
+
+2. Error 반환 (fmt.Errorf) or ( errors.New )
+    
+    func Sqrt(f float64) (float64, error) {
+        if f < 0 {
+            return 0, fmt.Errorf("제곱근은 양수여야 합니다 f:%g", f)
+            // or 
+            // return 0, errors.New("제곱근은 양수여야 합니다")
+        }
+        return math.Sqrt(f), nil
+    }
+
+3. error 랩핑
+    fmt.Errorf() 의 %w포매터로 에러 랩핑 가능 
+    errors.Is // 해당 error가 있는지 여부만 반환
+    errors.As // 실제로 데이터를 꺼내 오는 것 
+        
+    func readEq(eq string) {
+        
+        rst, err := MultipleFromString(eq)
+        if err == nil {
+            fmt.Println(rst)
+        } else {
+            fmt.Println(err)
+
+            var numError *strconv.NumError
+            // num 관련 에러로 변경
+            if errors.As(err, &numError) {
+                fmt.Println("NumberError", numError)
+            }
+        }
+
+4. panic
+
+    func panic(interface{})
+
+    처리하기 힘든 에러를 만났을 때 프로그램을 조기 종료 하는 방법
+    빠르게 종료시켜서 오류를 해결하기 위해서 사용 
+
+5. recover - 사용 비추천 
+    panic에서 넣은 인자가 recover에서 나온다?
+    func recover() interface{}

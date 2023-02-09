@@ -1,0 +1,257 @@
+1. SOILD 란 ?
+
+    객체지향 설계 5가지 원칙의 약자
+        단일 책임 원칙 single responsibility principle, SRP
+        
+        개방 -폐쇄 원칙 open-closed principle, OCP
+        
+        리스코프 치환 원칙 liskov subsitution principle, LSP
+        
+        인터페이스 분리 원칙   interface segregation principle, ISP
+        
+        의존 관계 역전 원칙 dependency inversion principle, DIP 
+
+2. 나쁜 설계란 ?
+
+    rigidity(경직성)
+        => 모듈 간의 결합도(coupling)가 너무 높아서 코드를 변경하기 매우 어려운 구조
+    
+    fragility(부서지기 쉬움)
+        => 한 부분을 건드렸더니 다른 부분까지 망가지는 경우 
+
+    immobility(부동성)
+        => 코드 일부분을 현재 어플리케이션에서 분리해서 다른 프로젝트에도 쓰고 싶지만, 
+         모듈간 결합도가 너무 높아서 옮길 수 없는 경우, 코드 재사용률이 급격히 감소
+
+
+3. 단일 책임 원칙(SRP)
+    모든 객체는 책임을 하나만 져야 한다. 
+    코드 재사욜률이 높아진다. 
+
+    ★ 위반 사례 
+
+    // 회계 보고서라는 역할, 전송이라는 역할  두 가지를 가지고 있어서 위배
+    type FinanceReport struct { // 회계 보고서
+        report string
+    }
+
+    func (r *FinanceReport) SendReport(email string) { // 보고서 전송
+
+    }
+
+    // 마케팅 보고서라는 역할이 생겼을 때 전송기능을 다시한번 선언 필요 
+    type MarketingReport struct { // 마케팅 보고서
+        report string
+    }
+
+    func (r *MarketingReport) SendReport(email string) { // 보고서 전송
+
+    }
+
+    => ReportSender 를 하나 만들어서 전송하는 역할 생성 
+
+    type Report interface { // Report() 메서드를 포함한 Report 인터페이스
+        Report() string
+    }
+
+    //  보고서 기능만 담당 
+    type FinanceReport struct { // 회계 보고서를 담당하는 FinanceReport
+        report string
+    }
+
+    func (r *FinanceReport) Report() string { // Report 인터페이스 구현
+        return r.report
+    }
+
+    type ReportSender struct {  // 보고서 전송을 담당
+
+    }
+
+    // 전송만 담당 
+    func (s *ReportSender) SendReport(report Report ){
+        // Report 인터페이스 객체를 인수로 받음 
+
+    }
+
+4. 개방-폐쇄 원칙(OCP)
+    확장에는 열려 있고, 변경에는 닫혀 있다. 
+    => 기존 코드 변경 없이 새로운 기능 추가가 가능하다. 
+    상호 결합도를 줄여 새 기능을 추가할 때 기존 구현을 변경하지 않아도 됩니다. 
+
+    OCP 기존코드를 아예 안고칠 순 없고 최소화 하자 !!
+     
+     ★ 위반 사례 
+     
+     // 새로운 방법이 생길 경우 case가 추가되는 경우가 생긴다. 
+     // SRP 도 위반, email, fax pdf 여러개를 책임지고 있다. (도메인도 하나의 책임 ?)
+     func SendReport(r *Report, method SendType, receiver string) {
+        switch method {
+            case Email: 
+
+            case Fax:
+
+            case PDF:
+
+            case Printer:
+        }
+     }
+
+    => ReportSender 를 하나 만들어서 전송하는 역할 생성 
+
+     type ReportSender interface {
+        Send(r *Report)
+     }
+
+     type EmailSender struct {
+
+     }
+
+     func (e *EmailSender) Send(r *Report ){
+        // 이메일 전송
+     }
+
+     type FaxSender struct {
+
+     }
+
+     func (f *FaxSender) send(r *Report) {
+        // 팩스 전송 
+     }
+
+     // FactoryMethod를 하나 만들어서 switch 로 send type을 만들어서 반환 
+     // type이 추가 될 때 FactoryMethod만 수정하면 되게끔 
+
+5. 리스코프 치환 원칙(LSP)
+    ※ 완벽하게 지키기 힘든편이다 
+
+    q(x)를 타입 T의 객체 x에 대해 증명할 수 있는 속성이라 하자. 
+    그렇다면 S가 T의 하위 타입이라면 q(y)는 타입 S의 객체 y에 대해 증명할 수 있어야 한다. 
+    => q에 상위 타입에서 동작하면 상위 타입을 상속받은 하위 타입도 q에 동작해야한다 
+    => 이 이론이 나왔을 땐 oop개념이 없었고, 현재는 oop개념으로 코딩을 많이 하기 때문에 
+      이미 실천하고 있다? 라고 봐도 될 수도 있다. 
+
+    예상치 못한 작동을 예방할 수 있습니다. 
+
+    ※ 위반 사례
+
+    // go에는 class가 없지만 있다고 가정
+    class Rectangle {
+        width int
+        height int 
+
+        setWidth(w int) { width = w }
+        setHeight(w int) { height = h }
+    }
+
+    // 정사각형 class
+    class Square extends Rectangle {
+        @override
+        setWidth(w int) { width = w; height = w;}
+
+        @override
+        setHeight(h int) { height = h; width = w;}
+    }
+
+    // 화면 가로 크기에 맞게 이미지의 '가로 크기' 를 늘리는 function
+    // Rectangle 이 정사각형인지 직사각형지 판단을 못해서 
+    // 정사각형 객체인 경우 width 만 바뀌지 않고 height 도 바뀌어서 function의 이미가 바뀐다. 
+    func FillScreenWidth(screenSize Rectangle, imageSize *Rectangle) {
+        if imageSize.width < screenSize.width {
+            imageSize.setWidth(screenSize.width)
+        }
+    }
+
+    ※ 위반 사례 2
+
+    type Report interface {
+        Report() string
+    }
+
+    type MarketingReport {
+
+    }
+
+    func (, *MarketingReport) Report() string {
+
+    }
+
+    func SendReport(r Report ){}   // 왠만하면 type 변경은 지양하자 
+        if _, ok := r.(*MarketingReport); ok {  // r이 마케팅 보고서일 경우 패닉 
+            panic("Can't send MarketingReport")
+        }
+    }
+
+
+6. 인터페이스 분리 원칙(ISP)
+    클라이언트는 자신이 이용하지 않는 메서드에 의존하지 않아야 한다. 
+
+    인터페이스를 분리하면 불필요한 메서드들과 의존 관계가 끊어져 더 가볍게 인터페이스를 이용할 수 있습니다.
+
+    ※ 위반 사례
+    
+    //안쓰는 메서드들도 구현해야 interface를 사용할 수 있는 상황
+
+    type Report interface {
+        Report() string
+        Pages() int   // 크게 연관없고 사용하지 않을 메서드
+        Author() string  // 크게 연관없고 사용하지 않을 메서드
+        WrittenDate() time.Time  // 크게 연관없고 사용하지 않을 메서드
+    }
+
+    func SendREport(r Report){
+        send(r.Report())
+    }
+
+    => interface 를 분리 
+
+    type Report interface {
+        Report() string
+    }
+
+    type WrittenInfo interface {
+        Pages() int   
+        Author() string  
+        WrittenDate() time.Time  
+    }
+
+    func SendREport(r Report){
+        send(r.Report())
+    }
+
+
+7. 의존 관계 역전 원칙(DIP)
+    상위 계층이 하위 계층에 의존하는 전통적인 의존 관계를 반전(역전)시킴으로써 상위계층이 
+    하위 계층의 구현으로부터 독립되게 할 수 있다. 
+
+    원칙
+        원칙1: 상위모듈은 하위 모듈에 의존해서는 안된다. 둘다 추상 모듈에 의존해야한다. 
+
+        잘못된 예) 
+            [전송] 상위모듈 
+        [키보드]  [네트워크]  하위모듈들 
+
+        변경 예) 추상 관계로 역전, 확장이 쉬워진다. 키보드나, 네트워크를 교체 혹은 확장 가능
+        <<interface>>[입력]   <-  전송  ->  <<interface>> [출력]
+           [키보드]                                [네트워크] 
+
+
+        원칙2: 추상모듈은 구체화된 모듈에 의존해서는 안된다. 구체화된 모듈은 추상모듈에 의존해야한다. 
+
+            // 구체화 된 모듈끼리 의존 
+            type Mail struct {
+                alarm Alarm
+            }
+            
+            type Alarm struct {
+
+            }
+            func (m *Mail) OnRecv() { // OnRecv() 메서드는 메일 수신 시 호출됩니다.
+                m.alarm.Alarm()       // 알람을 울립니다. 
+            }
+            
+            // 사실 go 는 Dock typing을 지원하기 때문에 이렇게 해도 되긴 한다. 
+            [메일] <- [알람] //메일이 알람을 소유하고 있다. 
+
+            // 아래와 같이 변경하는게 좋다. (추상관계로 역전)
+            <<interface>>[Event]   <- <<interface>>[EventListener]
+            [메일]                         [알람]

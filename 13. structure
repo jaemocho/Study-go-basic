@@ -1,0 +1,110 @@
+1. 구조체 선언
+
+    type 타입명 struct {
+        필드명 타입
+        ...
+        필드명 타입 
+    }
+
+    ex)
+
+    type Student struct {
+        Name string
+        Class int
+        No int
+        Score float64
+    }
+
+    var a Student
+
+    구조체를 포함하는 구조체 선언 가능 
+
+2. 포함된 필드 방식(embedded field)
+
+    type User struct {
+        Name string
+        ID string
+        Age int
+        Level int
+    }
+
+    type VIPUser struct {
+        User    // 필드명 없이 type만 
+        Price int
+        Level int
+    }
+
+    var user1 User = {
+        Name: "송하나",
+        ID: "hana",
+        Age: 20,
+        Level: 1,
+    }
+
+    var vip1 VIPUser ={
+        User: user1,
+        Price : 1,
+        Level: 3,    
+    }
+
+    vip1.Name << 과 같은 형태로 호출이 가능 
+    embedded 가 아닐 시에는 아래와 같은 형태로 호출 
+    vip1.User.Name 
+
+    같은 field명이 있을 땐 VIPUser의 값이 우선순위 
+
+3. memory padding 
+
+    type User struct {
+        Age   int32   //4
+        Score float64 //12
+    }
+
+    func main() {
+        user := User{23, 77.2}
+        fmt.Println(unsafe.Sizeof(user))
+        /*
+            PS C:\Users\조재모\goprojects\example\ex13.5>
+            PS C:\Users\조재모\goprojects\example\ex13.5> .\ex13.5.exe
+            16
+        */
+    }
+
+    // age 4 byte score 12byte 인데 결과는 12가아닌 16byte => memory padding
+    // 정렬 및 데이터 가져올 때 편의성을 위해 padding 이 생성
+
+
+    type User struct {
+        A int    //8 byte
+        B int8   //1 byte
+        C int    //8 byte
+        D int8   //1 byte
+        E int    //8 byte
+    }
+
+    padding 때문에 32 byte 사용 
+
+    type User struct {
+        
+        B int8   //1 byte
+        D int8   //1 byte
+        E int    //1 byte
+        C int    //8 byte
+        A int    //8 byte
+    }
+
+    24 byte 만 사용 
+    처음 8 byte 에  B D E 가 들어가고  5byte padding 생성 후 C A 들어간다
+
+
+4. 구조체의 역할 
+
+    결합도(의존성)은 낮게 응집도는 높게 
+
+    low coupling, high cohesion
+
+    함수는 관련 코드 블록을 묶어서 응집도를 높이고 재사용성을 증가 
+
+    배열은 같은 타입의 데이터들을 묶어서 응집도를 높임 
+
+    구조체는 관련된 데이터들을 묶어서 응집도를 높이고 재사용성을 증가

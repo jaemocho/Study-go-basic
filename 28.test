@@ -1,0 +1,110 @@
+1. 테스트 코드 작성법
+    파일명이 _test.go로 끝나야 합니다. 
+    testing 패키지를 입포트 해야 합니다 .
+    테스트 코드는 func TestXxxxx(t *testing.T)형태이어야 합니다. 
+
+
+    package main
+
+    import "testing"
+
+    func TestSquare1(t *testing.T) {
+        rst := square(9)
+        if rst != 81 {
+            t.Errorf("square(9) should be 81 but returns %d", rst)
+        }
+    }
+
+    go test 명령어로 test
+
+    // 일부만 테스트  
+    go test -run 테스트명
+
+    //외부 패키지 (assert 보유 )
+    "github.com/stretchr/testify/assert" 
+
+    ex) 성공
+    PS C:\Users\조재모\goprojects\example\ex28.1> go test
+    PASS
+    ok      goprojects/ex28.1       0.323s
+
+    ex) 실패 
+    PS C:\Users\조재모\goprojects\example\ex28.1> go test
+    --- FAIL: TestSquare1 (0.00s)
+        ex28.1_test.go:14:
+                    Error Trace:    C:\Users\조재모\goprojects\example\ex28.1\ex28.1_test.go:14
+                    Error:          Not equal:
+                                    expected: 82
+                                    actual  : 81
+                    Test:           TestSquare1
+                    Messages:       square(9) should be 81
+    FAIL
+    exit status 1
+    FAIL    goprojects/ex28.1       0.315s
+
+
+2. 테스트 주도 개발(TDD)
+    - 기존 문제 : 테스트가 정말 중요한데 테스트 케이스가 
+                절대적으로 부족하거나 형식적인 경우가 많았다. 
+    ※ [코드 작성] -> [테스트] -> [완성] 형태로 코드 작성 후 테스트 코드가 작성 됨 
+
+    - 개선 : 테스트 먼저 하자 
+             테스트를 먼저 작성하면 처음엔 무조건 실패, 실패하지 않는 코드를 작성하고 반영
+
+    [테스트 작성] -> [테스트 실패] -> [코드 작성] -> [완성]
+                                            ↓
+       ↑  <-        [개선]      <-   [테스트 성공]
+
+3. TDD 장점
+    1. 테스트 케이스가 자연스럽게 늘어난다. 
+    2. 테스트가 촘촘해진다. 
+    3. 자연스러운 회기 테스트가 가능하다. 
+    4. 리팩토링이 쉬워진다. 
+    5. 개발이 즐겁다.
+    6. 코드 커버리지가 자연히 증가된다. 
+
+
+4. TDD 단점
+    1. 모듈간 의존성이 높은 경우 테스트 케이스를 만들기 힘들다. 
+    2. 동시성 테스트에 취약하다.
+    3. 진정한 TDD가 아닌 형식적인 테스트로 전락할 수 있다. 
+    4. 지속적인 모니터링과 관리가 필요하다. 
+
+
+5. 벤치마크 테스트 
+
+    ex) 피보나치 수열 성능 테스트 
+    
+    package main
+
+    import "testing"
+
+    func BenchmarkFibonacci1(b *testing.B) {
+        // b.N 은 function 의 반복횟수 같은 function을 N번 반복
+        for i := 0; i < b.N; i++ {
+            fibonacci1(20)
+        }
+    }
+
+    func BenchmarkFibonacci2(b *testing.B) {
+        // b.N 은 function 의 반복횟수 같은 function을 N번 반복
+        for i := 0; i < b.N; i++ {
+            fibonacci2(20)
+        }
+    }
+
+    /*
+    PS C:\Users\조재모\goprojects\example\ex28.2> go test -bench .
+    goos: windows
+    goarch: amd64
+    pkg: goprojects/ex28.2
+    cpu: Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz
+    BenchmarkFibonacci1-4            4575316               266.5 ns/op
+    PASS
+    ok      goprojects/ex28.2       1.988s
+    PS C:\Users\조재모\goprojects\example\ex28.2> go test
+    testing: warning: no tests to run
+    PASS
+    ok      goprojects/ex28.2       0.282s
+
+    */

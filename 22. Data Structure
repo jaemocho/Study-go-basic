@@ -1,0 +1,53 @@
+1. 자료구조
+
+    배열/리스트/트리/맵
+
+2. 리스트의 형태
+
+    type Element struct {   // 구조체
+        Value interface {}  // 데이터를 저장하는 필드
+        Next *Element       // 다음 요소의 주소를 저장하는 필드
+        Prev *Element       // 이전 요소의 주소를 저장하는 필드 
+    }
+
+    "container/list" package 사용
+
+3. ring   원형 큐 (Circular Queue)
+    import (
+        "container/ring"
+        "fmt"
+    )
+
+    언제 쓸까 ?
+    1. 실행 취소 기능 : 문서 편집기 등에서 일정한 개수의 명령을 저장하고 실행 취소하는 경우
+    2. 고정 크기 버퍼 기능 : 데이터에 따라 버퍼가 증가되지 않고 고정된 길이로 쓸 때 
+    3. 리플레이 기능 : 게임 등에서 최근 플레이 10초를 다시 리플레이할 때와 같이 고정된 
+                    길이의 리플레이 기능을 제공할 때 
+
+4. 맵(map)
+    
+    키와 값 형태, dictionary, hash table, hash map 으로도 부른다 
+
+    map[key]value
+    map[string]int  =? "aaa" 라는 키의 값 3
+
+5. 맵 순회 (순서보장이 안된다)
+    
+    m := make(map[int]Product)
+
+	m[16] = Product{"볼펜", 500}
+	m[46] = Product{"지우개", 200}
+	m[78] = Product{"자", 1000}
+	m[345] = Product{"자", 700}
+	m[897] = Product{"샤프", 300}
+
+	for k, v := range m {
+		fmt.Println(k, v)
+	}
+
+6. 맵 요소 삭제와 존재 여부 
+    delete(m, key) // m = 맵 변수, 삭제 key
+
+    v, ok := m[3] // v = 값, ok는 존재여부를 판단하는 return 값
+
+

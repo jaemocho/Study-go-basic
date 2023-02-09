@@ -1,0 +1,27 @@
+1. method
+    method는 type에 속한 함수 입니다. 
+
+    ※ method 선언
+
+          리시버    메서드명 
+    func (r Rabbit) info() int {
+        return r.width * r.height
+    }
+
+2. object
+    object란 데이터(state) 와 기능(function)을 묶은 것 
+
+3. time package
+    Time(value형)와 Timer(pointer형)의 차이 => 데이터카 바뀌느냐 
+    필드값이 바뀌어도 객체의 개념이 유지되면 pointer 아니면 value 
+
+4. 생성자 & 소멸자 
+    없다 
+    NewTimer 같이 개발자가 만드는 방법 이용 
+
+5 . Sprintf
+
+    func (u User) String() string {
+        // 출력되는 string을 만들어서 반환 
+        return fmt.Sprintf("%s, %d", u.Name, u.Age) 
+    }

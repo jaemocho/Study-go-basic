@@ -1,0 +1,87 @@
+1. 인터페이스 
+    구체화된 객체(concrete object)가 아닌 추상화된 
+    상호작용으로 관계를 표현 
+
+    ※ 선언, 구현은 필요 x
+    type DuckInterface interface {
+        Fly()
+        Walk(distance int) int 
+    } 
+
+2. 인터페이스 규칙
+
+    - 메서드는 반드시 메서드명이 있어야 합니다. 
+    - 매개변수와 반환이 다르더라도 이름이 같은 메서드는 있을 수 없습니다. 
+    - 인터페이스에서는 메서드 구현을 포함하지 않습니다
+    type Sample interface {
+        String() String
+        String(int) String  // error  overloading 불가
+        _ (x int)           // error  이름이 없는 것 불가
+    }
+
+3. 덕타이핑
+    만약 어떤 새를 봤는데 그 새가 오리처럼 걷고 
+    오리처럼 날고 오리처럼 소리내면 나는 그 새를 
+    오리라고 부르겠다.
+
+    // java 였다면 아래와 같이 선언하나 
+    type FedexSender struct implements Sender {
+
+    }
+
+    // go에서는 아래와 같이 선언하고 interface에 요구되는 method만 구현하고 있으면 interface로 인식 
+    type FedexSender struct{
+
+    }
+
+    - 장점 
+
+    type 선언 시 인터페이스 구현 여부를 명시하지 않아도 된다
+
+     구현하된 객체(concrete class) 만 제공하면 
+    사용자가 필요에 따라 인터페이스를 정의해서 사용할 수 있다
+    
+4. 인터페이스 사이즈
+
+    두 개의 필드로 구성
+    1). 인스턴스 메모리 주소
+    2). 타입정보
+
+5. 포함된 인터페이스 
+
+    type Reader interface{
+        Read() (n int, err error)
+        Close() error
+    }
+
+    type Writer interface {
+        Write() (n int, err error)
+        Close() error
+    }
+
+    // 다른 interface를 포함할 수 있다 
+    type ReadWriter interface {
+        Reader
+        Writer
+    }
+
+6. 빈 인터페이스 
+    interface {} // 어느 것이든 가능하다 
+
+7. 인터페이스 기본값은 nil
+
+8. 인터페이스 타입 변환 
+    인터페이스로 선언 했지만 원래의 타입에 있는 method 나 value를 가져오고 싶은 경우 
+
+    var a interface
+    // 타입 변환 
+    t := a.(ConcreteType)  
+
+    // 아래와 같은 형태로 성공여부까지 인자를 받으면 runtime 시 오류를 방지할 수 있다 
+    t, ok := a.(ConcreteType) 
+
+    관용 표현
+
+    if c, ok := reader.(Closer); ok {
+        ...
+    }

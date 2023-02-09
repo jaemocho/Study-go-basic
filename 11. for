@@ -1,0 +1,30 @@
+1. for문 (while문이 없음 )
+
+for 초기문; 조건문; 후처리 {
+    코드블록
+}
+
+for i := 0; i < 10; i++ {
+    fmt.Println(i, ", ")
+}
+
+2. 무한루프
+
+for true {
+    코드블록 
+}
+
+for {
+    코드블록 
+}
+
+3. break 레이블(되도록이면 안쓰는게 좋다 instruction point를 강제로 바꾸어서 stack을 꼬이게 할 수 있다 )
+
+OuterFor:
+    for ; a <= 9; a++ {
+        for b = 1; b <= 9; b++ {
+            if a * b == 45 {
+                break OuterFor
+            }
+        }
+    }

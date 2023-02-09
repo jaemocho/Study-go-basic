@@ -1,0 +1,29 @@
+1. switch  문
+
+switch 비교값 {
+    case 값1:
+      문장
+    case 값2:
+      문장
+    default:
+      문장
+}
+
+2. switch문 언제쓰는가 ?
+
+if문보다 보기 좋을 때 
+조건이 중요하면 if문 값이 중요하면 switch 문 
+열거형과 함께
+
+3. switch  초기문
+switch 초기문; 비교값 {
+    case 값1:
+        ...
+    case 값2:
+        ...
+    defualt:
+        ...
+}
+
+4. go에서는 switch문에 break 없어도 조건 매칭 시 다음 case를 검사하지 않는다. 
+5. fallthrough 를 사용하면 조건 매칭 시에도 다음 case로 이동한다 

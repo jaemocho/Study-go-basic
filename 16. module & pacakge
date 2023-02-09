@@ -1,0 +1,147 @@
+1. 모듈 & 패키지
+
+    모듈은 패키지의 모음 
+
+    패키지는 코드를 묶는 단위 (모든 코드는 패키지로 묶여야 한다.)
+
+    프로그램이란 ? 
+    실행 시작 지점을 포함한 패키지 
+    즉 main 함수를 포함한 main 패키지 
+
+2. main package 가 아닌 그 외 package
+
+    실행 시작 지점을 포함하지 않은 패키지로 
+
+    프로그램의 보조 패키지로 동작 
+
+3. 겹치는 패키지명 
+
+    겹치는 경우 (둘다 template )
+
+    import (
+        "text/template"
+        "html/template"
+    )
+
+    별칭을 달아서 사용 
+    import (
+        "text/template"  // template 
+        htemplate "html/template" // 별칭 htemplete
+    )
+
+    ※ 안쓰는 package가 있으면 error 발생 
+
+    import (
+        "text/template"  // template 
+        htemplate "html/template" // 별칭 htemplete
+        _ "strings" // _ 로 별칭을 주어 import 하면 사용하지 않아도 error 가 발생하지 않는다.
+    )
+
+4. 실습
+    1. goprojects/usepkg 폴더 생성
+    2. go mod init goprojects/usepkg
+    3. mkdir custompkg
+    4. Custompkg.go
+    5. mkdir program
+    6. usepkg.go
+    7. go mod tidy (외부 package download)
+    8. go build
+
+    폴더명 package 명 같게 
+    //C:\Users\조재모\goprojects\usepkg> 에서 모듈 생성 
+    go mod init goproject/usepkg
+    
+    
+        디렉터리: C:\Users\조재모\goprojects\usepkg
+
+
+    Mode                 LastWriteTime         Length Name
+    ----                 -------------         ------ ----
+    d-----      2023-01-29   오전 2:16                custompkg
+    d-----      2023-01-29   오전 2:17                program
+    -a----      2023-01-29   오전 2:23             33 go.mod
+    
+    
+    다운로드 받은 외부 패키지는 gopath 에 다운 C:\Users\조재모\go\pkg\mod\github.com\guptarohit
+
+
+    package main
+
+    import (
+        "fmt"
+        "goproject/usepkg/custompkg"
+
+        "github.com/guptarohit/asciigraph"
+        "github.com/tuckersGo/musthaveGo/ch16/expkg"
+    )
+
+    func main() {
+        custompkg.PrintCustom()
+        expkg.PrintSample()
+
+        data := []float64{3, 4, 5, 6, 7, 8, 9, 10, 11, 2}
+        graph := asciigraph.Plot(data)
+        fmt.Println(graph)
+
+    }
+
+    // 결과 
+
+    PS C:\Users\조재모\goprojects\usepkg\program> .\program.exe
+    This is custom package!
+    This is Github expkg Sample
+    11.00 ┤       ╭╮
+    10.00 ┤      ╭╯│
+    9.00 ┤     ╭╯ │
+    8.00 ┤    ╭╯  │
+    7.00 ┤   ╭╯   │
+    6.00 ┤  ╭╯    │
+    5.00 ┤ ╭╯     │
+    4.00 ┤╭╯      │
+    3.00 ┼╯       │
+    2.00 ┤        ╰
+    PS C:\Users\조재모\goprojects\usepkg\program>
+
+5. package 외부 공개 
+
+        private function 이 소문자로 시작
+        publie  function 이 대문자로 시작 
+
+    7. package 초기화 ( import가 될 때 마다 호출 되는 것이 아니라 어디서든 한번만 초기화 )
+
+    package 가 프로그램에 포함되어 초기화 될 때 
+    package내 init() 가 한번만 호출된다 (package 내 전역변수 초기화)
+
+    전역 변수 초기화 후 init() 실행 
+
+    var (
+        a = c + b
+        b = f()
+        c = f()
+        d = 3
+    )
+
+    func init() {
+        d++
+        fmt.Println("exinit function", d)
+
+    }
+
+    func f() int {
+        d++
+        fmt.Println("f() d:", d)
+        return d
+    }
+
+    func PrintD() {
+        fmt.Println("d:", d)
+    }
+
+
+    PS C:\Users\조재모\goprojects\usepkg\program> .\program.exe
+    f() d: 4  // 전역변수 초기화
+    f() d: 5  // 전역변수 초기화
+    exinit function 6 // init() 실행
+    d: 6    // main 에서 호출 한 것 
+
+
